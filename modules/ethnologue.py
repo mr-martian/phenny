@@ -20,18 +20,33 @@ def shorten_num(n):
         return '{}M'.format(str(round(n/1000000, 1)).rstrip('0').rstrip('.'))
 
 def scrape_ethnologue_codes(phenny):
-    data = {}
-
-    def scrape_ethnologue_code(doc):
-        for e in doc.find_class('views-field-field-iso-639-3'):
-            code = e.find('div/a').text
-            name = e.find('div/a').attrib['title']
-            data[code] = name
-
-    base_url = 'https://www.ethnologue.com/browse/codes/'
-    for letter in ascii_lowercase:
-        web.with_scraped_page(base_url + letter)(scrape_ethnologue_code)()
-    phenny.ethno_data = data
+    # see https://iso639-3.sil.org/code_tables/download_tables
+    # for more information
+    iso = {}
+    ethno = {}
+    convert = {}
+    codes = web.get('https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab')
+    for entry in codes.splitlines()[1:]:
+        values = entry.split('\t')
+        code3 = values[0]
+        code2b = values[1]
+        code2t = values[2]
+        code1 = values[3]
+        name = values[6]
+        values = entry.split('\t')
+        if code2b:
+            iso[code2b] = name
+        if code2t:
+            iso[code2t] = name
+        if code1:
+            iso[code1] = name
+            convert[code1] = code3
+            convert[code3] = code1
+        iso[code3] = name
+        ethno[code3] = name
+    phenny.ethno_data = ethno
+    phenny.iso_data = iso
+    phenny.iso_conversion_data = convert
 
 def write_ethnologue_codes(phenny, raw=None):
     if raw is None or raw.admin:

@@ -34,7 +34,7 @@ class TestISO639(unittest.TestCase):
             'es': 'Spanish',
             'eng': 'English',
             'fra': 'French',
-            'deu': 'German, Standard',
+            'deu': 'German',
             'cat': 'Catalan',
             'spa': 'Spanish',
         }
