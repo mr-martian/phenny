@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 language.py - Query Wikidata for language data
-author: popcorndude
+author: popcorndude, scoopgracie
 """
 
 from lxml.etree import ElementTree
@@ -115,6 +115,6 @@ WHERE {
     phenny.say(response)
 
 lang.name = 'wikidata'
-lang.commands = ['wikidata']
+lang.commands = ['wikidata', 'lg']
 lang.example = '.wikidata khk'
 lang.priority = 'low'
