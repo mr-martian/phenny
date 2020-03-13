@@ -20,6 +20,20 @@ def shorten_num(n):
         return '{}M'.format(str(round(n/1000000, 1)).rstrip('0').rstrip('.'))
 
 def scrape_ethnologue_codes(phenny):
+    data = {}
+
+    def scrape_ethnologue_code(doc):
+        for e in doc.find_class('views-field-field-iso-639-3'):
+            code = e.find('div/a').text
+            name = e.find('div/a').attrib['title']
+            data[code] = name
+
+    base_url = 'https://www.ethnologue.com/browse/codes/'
+    for letter in ascii_lowercase:
+        web.with_scraped_page(base_url + letter)(scrape_ethnologue_code)()
+    phenny.ethno_data = data
+
+def scrape_iso_codes(phenny):
     # see https://iso639-3.sil.org/code_tables/download_tables
     # for more information
     iso = {}
@@ -50,7 +64,7 @@ def scrape_ethnologue_codes(phenny):
 
 def write_ethnologue_codes(phenny, raw=None):
     if raw is None or raw.admin:
-        scrape_ethnologue_codes(phenny)
+        scrape_iso_codes(phenny)
         logger.debug('Ethnologue iso-639 code fetch successful')
         if raw:
             phenny.say('Ethnologue iso-639 code fetch successful')
@@ -137,4 +151,4 @@ ethnologue.example = '.ethnologue khk'
 ethnologue.priority = 'low'
 
 def setup(phenny):
-    scrape_ethnologue_codes(phenny)
+    scrape_iso_codes(phenny)
