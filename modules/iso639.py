@@ -139,7 +139,13 @@ def scrape_wiki_codes_convert(doc):
 def refresh_database(phenny, raw=None):
     if raw.admin or raw is None:
         ethnologue.write_ethnologue_codes(phenny)
+        # phenny.iso_data = scrape_wiki_codes()
+        # phenny.iso_data.update(phenny.ethno_data)
         phenny.say('ISO code database successfully written')
+
+        # phenny.iso_conversion_data = scrape_wiki_codes_convert()
+        # phenny.say('ISO conversion db successfully written')
+
     else:
         phenny.say('Only admins can execute that command!')
 
@@ -154,7 +160,7 @@ def thread_check(phenny, raw):
 def setup(phenny):
     # populate ethnologue codes
     ethnologue.setup(phenny)
-    
+
     # phenny.iso_data = scrape_wiki_codes()
     # phenny.iso_data.update(phenny.ethno_data)
 
